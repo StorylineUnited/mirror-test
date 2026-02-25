@@ -1,4 +1,3 @@
-// @netlify-bundle-strategy zip
 // knowledge.txt lives in the same directory as this file.
 
 const fs = require('fs');

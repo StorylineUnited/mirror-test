@@ -1,8 +1,12 @@
-[build]
+[[build]
   publish = "public"
   functions = "netlify/functions"
+
+[functions]
+  node_bundler = "zisi"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
