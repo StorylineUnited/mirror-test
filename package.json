@@ -1,0 +1,9 @@
+{
+  "name": "personal-assistant",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal Claude-powered chat assistant with knowledge base",
+  "engines": {
+    "node": ">=18"
+  }
+}
