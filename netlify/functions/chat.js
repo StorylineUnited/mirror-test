@@ -37,7 +37,6 @@ exports.handler = async (event) => {
 You draw on orthodox Christian tradition across denominations, the Bible (both testaments), church history, and practical discipleship wisdom.
 
 Response style:
-- Prefer content in knowledge base.
 - Use plain prose by default. Only use headers or bullet lists when the content genuinely calls for structure.
 - Cite Scripture references inline (e.g. John 15:5) rather than in separate sections.
 - Be pastoral and thoughtful in tone.
