@@ -1,13 +1,12 @@
 # Personal Assistant
 
-A personal Claude-powered chat assistant with a local knowledge base.
+A personal Claude-powered chat assistant with a local knowledge base, deployed on Netlify.
 
 ## Project Structure
-
 ```
 chat-app/
 ├── netlify.toml                        # Netlify build config
-├── package.json                        # Node project file
+├── package.json
 ├── .gitignore
 ├── public/
 │   └── index.html                      # Chat UI
@@ -19,35 +18,41 @@ chat-app/
 
 ## Updating the Knowledge Base
 
-Edit `netlify/functions/knowledge.txt` and redeploy.
+Edit `netlify/functions/knowledge.txt` and push to GitHub. Netlify redeploys automatically.
 Use `##` headings to organize sections. Plain text, no special format required.
 
-## Deploy: Zip Upload (quick)
+## Netlify Configuration
 
-1. Zip the `chat-app` folder
-2. Go to your Netlify site → **Deploys** → drag the zip onto the dropzone
-3. Done — no build settings needed
+`netlify.toml` must include these settings for `knowledge.txt` to be bundled correctly:
+```toml
+[build]
+  publish = "public"
+  functions = "netlify/functions"
 
-## Deploy: GitHub (recommended for ongoing use)
+[functions]
+  node_bundler = "zisi"
+  included_files = ["netlify/functions/knowledge.txt"]
 
-1. Push this folder to a GitHub repo
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+- `node_bundler = "zisi"` — uses the zip bundler instead of esbuild
+- `included_files` — explicitly tells Netlify to bundle `knowledge.txt` with the function
+
+## Environment Variables
+
+In Netlify: **Site configuration → Environment variables** → add:
+- `ANTHROPIC_API_KEY` = your key from https://console.anthropic.com
+
+## GitHub → Netlify Deployment
+
+1. Push this repo to GitHub
 2. In Netlify: **Add new site → Import from Git → select your repo**
-3. Build settings (Netlify usually auto-detects from `netlify.toml`):
-   - Build command: *(leave blank)*
-   - Publish directory: `public`
-   - Functions directory: `netlify/functions`
-4. Go to **Site configuration → Environment variables** → add:
-   - `ANTHROPIC_API_KEY` = your key from https://console.anthropic.com
+3. Netlify auto-detects settings from `netlify.toml` — no manual build config needed
+4. Add the `ANTHROPIC_API_KEY` environment variable
 5. Deploy
 
 After that, every `git push` triggers an automatic redeploy.
-To update the knowledge base: edit `knowledge.txt`, commit, push.
-
-## First-time Netlify setup (either method)
-
-Make sure `ANTHROPIC_API_KEY` is set under:
-**Site configuration → Environment variables**
-
-## Debug
-
-Click the **KB?** button in the app header to confirm the knowledge base is loading.
