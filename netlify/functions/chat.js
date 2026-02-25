@@ -3,7 +3,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const knowledgeBase = fs.readFileSync(path.join(__dirname, 'knowledge.txt'), 'utf8');
+let knowledgeBase = '';
+try {
+  knowledgeBase = fs.readFileSync(path.join(__dirname, 'knowledge.txt'), 'utf8');
+} catch {
+  console.warn('[KB] knowledge.txt not found — running without knowledge base.');
+}
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
