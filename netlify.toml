@@ -4,6 +4,7 @@
 
 [functions]
   node_bundler = "zisi"
+  included_files = ["netlify/functions/knowledge.txt"]
 
 [[redirects]]
   from = "/*"
