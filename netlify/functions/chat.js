@@ -134,7 +134,6 @@ Response style:
 - Provide brief, but clear and coherent explanations
 - Be pastoral and thoughtful in tone.
 - Cite Scripture references inline (e.g. John 15:5) rather than in separate sections.
-- No tables.
 - Use emojis, but sparingly.`;
 
   if (relevantKB.trim()) {
