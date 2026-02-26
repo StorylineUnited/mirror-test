@@ -62,7 +62,7 @@
 ## Change process: Encounter → Formation → Expression
 - Encounters drive formation and expression. To change behavior, change encounters.
 - We cannot fully control encounters, but we can place ourselves in situations where we are more likely to experience God-encounters
-- Within encounter: disruption
+- Within encounter: disruption (aha! or oh no!)
 - Within formation: attunement and resonance
 - Within expression: embodiment
 
