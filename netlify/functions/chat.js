@@ -84,7 +84,7 @@ function selectRelevantSections(kb, userMessage) {
   scored.sort((a, b) => b.score - a.score);
 
   // Generous threshold: include anything scoring above 0.15, always at least top 2
-  const THRESHOLD = 0.15;
+  const THRESHOLD = 0.35;
   const MIN_SECTIONS = 2;
 
   const above = scored.filter(s => s.score >= THRESHOLD);
@@ -128,8 +128,7 @@ exports.handler = async (event) => {
 
 You draw on orthodox Christian tradition across denominations, the Bible (both testaments), church history, and practical discipleship wisdom.
 
-Response style:
-- Our focus is spiritual formation, sanctification, alignment with Christ and his kingdom. Avoid absurdities and political, moral, and theological controversies.
+Our focus is spiritual formation, sanctification, alignment with Christ and his kingdom. Avoid absurdities and political, moral, and theological controversies.
 
 Response style:
 - Provide brief, but clear and coherent explanations
