@@ -40,20 +40,16 @@ function tokenize(text) {
     .filter(w => w.length > 2 && !STOPWORDS.has(w));
 }
 
-// Score a KB section against the query using keyword overlap + partial matching
-// Generous: partial word matches and low threshold to avoid dropping relevant content
 function scoreSection(section, queryTokens) {
   const sectionTokens = tokenize(section.heading + ' ' + section.body);
   const sectionSet = new Set(sectionTokens);
 
   let score = 0;
   for (const qt of queryTokens) {
-    // Exact match
     if (sectionSet.has(qt)) {
       score += 2;
       continue;
     }
-    // Partial match — query token starts with or contains section token (or vice versa)
     for (const st of sectionSet) {
       if (st.startsWith(qt) || qt.startsWith(st)) {
         score += 1;
@@ -62,28 +58,21 @@ function scoreSection(section, queryTokens) {
     }
   }
 
-  // Normalize by query length so short queries aren't penalized
   return queryTokens.length > 0 ? score / queryTokens.length : 0;
 }
 
-// Select relevant sections — generous threshold, always include at least 2 sections
-// if there are any matches at all
 function selectRelevantSections(kb, userMessage) {
   if (!kb.trim()) return '';
 
   const sections = parseSections(kb);
-  if (sections.length === 0) return kb; // no headings — send whole KB
+  if (sections.length === 0) return kb;
 
   const queryTokens = tokenize(userMessage);
-  if (queryTokens.length === 0) return kb; // no meaningful query tokens — send all
+  if (queryTokens.length === 0) return kb;
 
-  // Score all sections
   const scored = sections.map(s => ({ ...s, score: scoreSection(s, queryTokens) }));
-
-  // Sort by score descending
   scored.sort((a, b) => b.score - a.score);
 
-  // Generous threshold: include anything scoring above 0.15, always at least top 2
   const THRESHOLD = 0.15;
   const MIN_SECTIONS = 2;
 
@@ -103,9 +92,9 @@ exports.handler = async (event) => {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'ANTHROPIC_API_KEY not set in environment variables.' }) };
+    return { statusCode: 500, body: JSON.stringify({ error: 'OPENAI_API_KEY not set in environment variables.' }) };
   }
 
   let body;
@@ -120,7 +109,6 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'messages array is required.' }) };
   }
 
-  // Use the latest user message for scoring
   const latestUserMessage = [...messages].reverse().find(m => m.role === 'user')?.content || '';
   const relevantKB = selectRelevantSections(knowledgeBase, latestUserMessage);
 
@@ -141,18 +129,19 @@ Response style:
   }
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'gpt-4.1',
         max_tokens: 768,
-        system: systemPrompt,
-        messages: messages.map(m => ({ role: m.role, content: m.content })),
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...messages.map(m => ({ role: m.role, content: m.content })),
+        ],
       }),
     });
 
@@ -161,14 +150,16 @@ Response style:
     if (!response.ok) {
       return {
         statusCode: response.status,
-        body: JSON.stringify({ error: data.error?.message || 'Claude API error.' }),
+        body: JSON.stringify({ error: data.error?.message || 'OpenAI API error.' }),
       };
     }
 
+    // Normalize response to match Anthropic shape the frontend expects
+    const text = data.choices?.[0]?.message?.content || '(no response)';
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ content: [{ text }] }),
     };
 
   } catch (err) {
