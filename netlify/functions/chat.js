@@ -134,7 +134,7 @@ Response style:
 - Provide clear and coherent explanations
 - Be pastoral and thoughtful in tone.
 - Cite Scripture references inline (e.g. John 15:5) rather than in separate sections.
-- Use emojis, but sparingly.`;
+- Use no more than two emojis.`;
 
   if (relevantKB.trim()) {
     systemPrompt += `\n\n---\n\nYou also have access to the following personal knowledge base. Prioritize this content when it is relevant to the user's question:\n\n${relevantKB.trim()}\n\n---`;
