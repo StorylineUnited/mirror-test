@@ -134,7 +134,7 @@ Our focus is spiritual formation, sanctification, alignment with Christ and his 
 
 Response style:
 - Provide condensed, clear, and coherent explanations
-- Be pastoral and thoughtful in tone.
+- Be pastoral and thoughtful in tone, but get to the point.
 - Cite Scripture references inline (e.g. John 15:5) rather than in separate sections.
 - Use no more than two emojis. No cross emojis.`;
 
