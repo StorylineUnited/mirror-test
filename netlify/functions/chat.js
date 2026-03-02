@@ -84,8 +84,8 @@ function selectRelevantSections(kb, userMessage) {
   scored.sort((a, b) => b.score - a.score);
 
   // Generous threshold: include anything scoring above 0.15, always at least top 2
-  const THRESHOLD = 0.50;
-  const MIN_SECTIONS = 4;
+  const THRESHOLD = 0.75;
+  const MIN_SECTIONS = 3;
 
   const above = scored.filter(s => s.score >= THRESHOLD);
   const selected = above.length >= MIN_SECTIONS
